@@ -20,6 +20,9 @@ function randomRGB() {
   return `rgb(${random(0, 255)},${random(0, 255)},${random(0, 255)})`;
 }
 
+/**
+ * Represents a generic shape
+ */
 class Shape {
   constructor(x, y, velX, velY) {
     this.x = x;
@@ -29,6 +32,9 @@ class Shape {
   }
 }
 
+/**
+ * Represents a ball
+ */
 class Ball extends Shape {
   constructor(x, y, velX, velY, color, size) {
     super(x, y, velX, velY);
@@ -83,6 +89,10 @@ class Ball extends Shape {
   }
 }
 
+/**
+ * Represents the circle controlled by the
+ * player
+ */
 class EvilCircle extends Shape {
   constructor(x, y) {
     super(x, y, 0, 0);
@@ -114,7 +124,7 @@ class EvilCircle extends Shape {
           this.movement.down = true;
           break;
         case " ":
-          this.decay = true;
+          this.decay = true; // Slow ball movement on spacebar
           break;
       }
     });
@@ -149,6 +159,10 @@ class EvilCircle extends Shape {
   }
 
   #decay() {
+    if (this.velX == 0 && this.velY == 0 || random(0, 500) % 5 != 0) {
+      return;
+    }
+    /* Move velocity closer to 0 */
     if (this.velX > 0) {
       this.velX--;
     } else if (this.velX < 0) {
@@ -163,9 +177,12 @@ class EvilCircle extends Shape {
   }
 
   update() {
+    /* Slow the ball down */
     if (this.decay) {
       this.#decay();
     }
+
+    /* Move ball based on input */
     if (this.movement.left) {
       this.velX--;
     }
@@ -179,6 +196,7 @@ class EvilCircle extends Shape {
       this.velY++;
     }
 
+    /* Handle wall collisions */
     if (this.x + this.size >= width) {
       this.x -= this.size / 2;
       this.velX = 0;
@@ -199,6 +217,7 @@ class EvilCircle extends Shape {
       this.velY = 0;
     }
     
+    /* Cap the ball's speed */
     if (this.velX > this.maxSpeed) {
       this.velX = this.maxSpeed;
     } else if (this.velX < -this.maxSpeed) {
@@ -211,6 +230,7 @@ class EvilCircle extends Shape {
       this.velY = -this.maxSpeed;
     }
 
+    /* Update ball position */
     this.x += this.velX;
     this.y += this.velY;
   }
@@ -253,16 +273,17 @@ while (balls.length < 25) {
 function loop() {
   ctx.fillStyle = "rgba(0, 0, 0, 0.25)";
   ctx.fillRect(0, 0, width, height);
+
+  /* Draw player */
   evilCircle.draw();
   evilCircle.update();
   evilCircle.collisionDetect();
+
+  /* Calculate & display ball count */
   const numBalls = balls.length - evilCircle.ballsEaten;
   ballCount.textContent = `Ball Count: ${numBalls}`;
 
-  if (numBalls <= 0) {
-    end.style.visibility = "visible";
-  }
-
+  /* Draw balls */
   for (const ball of balls) {
     if (!ball.exists) {
       continue;
@@ -270,6 +291,11 @@ function loop() {
     ball.draw();
     ball.update();
     ball.collisionDetect();
+  }
+  
+  /* Check win condition */
+  if (numBalls <= 0) {
+    end.style.visibility = "visible";
   }
 
   requestAnimationFrame(loop);
