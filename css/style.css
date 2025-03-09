@@ -23,3 +23,46 @@ h1 {
   color: transparent;
   text-shadow: 0 0 4px white;
 }
+
+p {
+  position: absolute;
+  margin: 0;
+  top: 35px;
+  right: 5px;
+  color: #aaa;
+}
+
+dialog {
+  visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 25%;
+  width: 25%;
+  height: 25%;
+  background-color: rgba(255, 255, 255, 0.755);
+  border: solid grey 5px;
+}
+
+dialog * {
+  text-align: center;
+  font-weight: bold;
+}
+
+dialog > a {
+  background-color: grey;
+  border-radius: 3px;
+  text-decoration: none;
+  color: black;
+  border: solid grey 2px;
+}
+
+dialog > a:hover {
+  background-color: lightgray;
+  border: solid black 2px;
+}
+
+canvas {
+  width: 100%;
+  height: 100%;
+}

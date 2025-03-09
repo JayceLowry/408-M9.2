@@ -2,6 +2,8 @@
 
 const canvas = document.querySelector("canvas");
 const ctx = canvas.getContext("2d");
+const ballCount = document.getElementById("ballcount");
+const end = document.getElementById("endscreen");
 
 const width = (canvas.width = window.innerWidth);
 const height = (canvas.height = window.innerHeight);
@@ -87,6 +89,7 @@ class EvilCircle extends Shape {
     this.color = "rgb(255, 255, 255)";
     this.size = 10;
     this.maxSpeed = 20;
+    this.ballsEaten = 0;
     
     this.movement = {
       left: false,
@@ -221,6 +224,7 @@ class EvilCircle extends Shape {
 
         if (distance < this.size + ball.size) {
           ball.exists = false;
+          this.ballsEaten++;
         }
       }
     }
@@ -252,6 +256,12 @@ function loop() {
   evilCircle.draw();
   evilCircle.update();
   evilCircle.collisionDetect();
+  const numBalls = balls.length - evilCircle.ballsEaten;
+  ballCount.textContent = `Ball Count: ${numBalls}`;
+
+  if (numBalls <= 0) {
+    end.style.visibility = "visible";
+  }
 
   for (const ball of balls) {
     if (!ball.exists) {
